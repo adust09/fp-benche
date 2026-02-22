@@ -1,0 +1,25 @@
+# Elixir
+_build/
+deps/
+*.beam
+*.ez
+
+# Mix
+mix.lock
+
+# Erlang
+erl_crash.dump
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Claude
+.claude/
