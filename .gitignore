@@ -23,3 +23,23 @@ Thumbs.db
 
 # Claude
 .claude/
+
+# Rust benchmarks
+benchmarks/rust/target/
+
+# Haskell benchmarks
+benchmarks/haskell/dist-newstyle/
+benchmarks/haskell/**/*.hi
+benchmarks/haskell/**/*.o
+benchmarks/haskell/**/*.dyn_hi
+benchmarks/haskell/**/*.dyn_o
+
+# Generated benchmark data (large files)
+benchmarks/data/*.txt
+benchmarks/data/*.json
+benchmarks/data/*.csv
+!benchmarks/data/generate-test-data.py
+
+# Benchmark results
+benchmarks/results/*
+!benchmarks/results/.gitkeep
