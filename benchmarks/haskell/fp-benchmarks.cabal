@@ -1,0 +1,103 @@
+cabal-version: 3.0
+name:          fp-benchmarks
+version:       0.1.0
+build-type:    Simple
+
+common opts
+  default-language: GHC2021
+  ghc-options:      -Wall -O2
+
+library
+  import:          opts
+  hs-source-dirs:  src
+  exposed-modules:
+    Algorithms.Fibonacci
+    Algorithms.MergeSort
+    Algorithms.Sieve
+    DataProcessing.WordCount
+    DataProcessing.JsonFilter
+    DataProcessing.GroupBy
+    Concurrency.ParallelMap
+    Concurrency.ChannelThroughput
+  build-depends:
+    base             >= 4.17 && < 5,
+    aeson            >= 2.1,
+    bytestring       >= 0.11,
+    cassava          >= 0.5,
+    containers       >= 0.6,
+    deepseq          >= 1.4,
+    hashable         >= 1.4,
+    parallel         >= 3.2,
+    stm              >= 2.5,
+    text             >= 2.0,
+    unordered-containers >= 0.2,
+    vector           >= 0.13
+
+executable fibonacci
+  import:          opts
+  main-is:         Fibonacci.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, deepseq, optparse-applicative >= 0.18
+
+executable merge-sort
+  import:          opts
+  main-is:         MergeSort.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, vector, deepseq, optparse-applicative >= 0.18
+
+executable sieve
+  import:          opts
+  main-is:         Sieve.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, vector, deepseq, optparse-applicative >= 0.18
+
+executable word-count
+  import:          opts
+  main-is:         WordCount.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, unordered-containers, deepseq, optparse-applicative >= 0.18
+
+executable json-filter
+  import:          opts
+  main-is:         JsonFilter.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, aeson, bytestring, deepseq, optparse-applicative >= 0.18
+
+executable group-by
+  import:          opts
+  main-is:         GroupBy.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, unordered-containers, deepseq, optparse-applicative >= 0.18
+
+executable parallel-map
+  import:          opts
+  main-is:         ParallelMap.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, vector, deepseq, optparse-applicative >= 0.18
+
+executable channel-throughput
+  import:          opts
+  main-is:         ChannelThroughput.hs
+  hs-source-dirs:  app
+  ghc-options:     -threaded -rtsopts
+  build-depends:   base, fp-benchmarks, stm, deepseq, optparse-applicative >= 0.18
+
+benchmark criterion-benchmarks
+  import:          opts
+  type:            exitcode-stdio-1.0
+  main-is:         Main.hs
+  hs-source-dirs:  bench
+  ghc-options:     -threaded -rtsopts
+  build-depends:
+    base,
+    fp-benchmarks,
+    criterion        >= 1.6,
+    deepseq,
+    vector
