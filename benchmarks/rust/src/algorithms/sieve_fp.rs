@@ -1,36 +1,22 @@
-/// Eratosthenes sieve using fold + for_each instead of while loops.
-/// Same algorithm (O(n log log n)) and data representation (Vec<u8>) as the
-/// index-based version in sieve.rs.
-///
-/// Note: a truly immutable (no-mutation) sieve would require trial division
-/// at O(n√n) cost, which is an algorithm change, not a style change.
+/// FP-style prime counting via declarative trial division.
+/// This favors expression of the prime predicate over in-place mutation, so it
+/// intentionally uses a different algorithm from the imperative sieve.
 pub fn sieve_count_fp(n: usize) -> usize {
-    if n < 2 {
-        return 0;
-    }
-    let limit = (n as f64).sqrt() as usize;
-    let sieve = (2..=limit).fold(vec![1u8; n + 1], |mut sieve, p| {
-        if sieve[p] == 1 {
-            (p * p..=n).step_by(p).for_each(|m| sieve[m] = 0);
-        }
-        sieve
-    });
-    sieve.iter().skip(2).map(|&x| x as usize).sum()
+    primes_up_to(n).count()
 }
 
-/// Returns all primes up to n as a Vec, using fold + filter + collect.
+/// Returns all primes up to n as a Vec using the same predicate pipeline.
 pub fn sieve_list_fp(n: usize) -> Vec<usize> {
-    if n < 2 {
-        return vec![];
-    }
-    let limit = (n as f64).sqrt() as usize;
-    let sieve = (2..=limit).fold(vec![1u8; n + 1], |mut sieve, p| {
-        if sieve[p] == 1 {
-            (p * p..=n).step_by(p).for_each(|m| sieve[m] = 0);
-        }
-        sieve
-    });
-    (2..=n).filter(|&i| sieve[i] == 1).collect()
+    primes_up_to(n).collect()
+}
+
+fn primes_up_to(n: usize) -> impl Iterator<Item = usize> {
+    (2..=n).filter(|&candidate| is_prime(candidate))
+}
+
+fn is_prime(candidate: usize) -> bool {
+    let limit = (candidate as f64).sqrt() as usize;
+    (2..=limit).all(|divisor| candidate % divisor != 0)
 }
 
 #[cfg(test)]

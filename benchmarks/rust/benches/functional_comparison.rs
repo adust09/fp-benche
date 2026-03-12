@@ -3,7 +3,7 @@ use fp_benchmarks::algorithms::{merge_sort, merge_sort_fp, sieve, sieve_fp};
 use fp_benchmarks::concurrency::{channel_throughput, channel_throughput_fp};
 use fp_benchmarks::data_processing::{group_by, group_by_fp, word_count_fp};
 
-/// Merge step comparison: index-based (while + i,j) vs iterator-based (Peekable + from_fn).
+/// Merge step comparison: index-based (while + i,j) vs slice-decomposition based iteration.
 /// The recursive sort structure is identical — only the merge helper differs.
 fn bench_merge_step_styles(c: &mut Criterion) {
     let mut group = c.benchmark_group("merge-step-styles");
@@ -27,8 +27,8 @@ fn bench_merge_step_styles(c: &mut Criterion) {
     group.finish();
 }
 
-/// Sieve comparison: while-loop vs fold/for_each.
-/// Same Eratosthenes algorithm, same Vec<u8> representation, same O(n log log n).
+/// Prime generation comparison: imperative sieve vs declarative trial division.
+/// This now contrasts algorithmic style as well as control-flow style.
 fn bench_sieve_styles(c: &mut Criterion) {
     let mut group = c.benchmark_group("sieve-styles");
     group.sample_size(20);

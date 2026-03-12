@@ -2,27 +2,34 @@ use std::collections::HashMap;
 
 use crate::data_processing::group_by::CategoryTotal;
 
-/// Fold-based group-by: iter().fold() with owned accumulator.
-/// Same logic as the loop version in group_by.rs, expressed as a fold chain.
+/// Group-by expressed as composition of singleton maps plus reduction.
+/// The aggregation step becomes "combine two partial maps" rather than mutating
+/// one long-lived accumulator in a loop.
 pub fn group_by_category_mem_fp(records: &[(String, f64)]) -> Vec<CategoryTotal> {
     records
         .iter()
-        .fold(
-            HashMap::<&str, (f64, u64)>::new(),
-            |mut acc, (cat, amt)| {
-                let e = acc.entry(cat.as_str()).or_insert((0.0, 0));
-                e.0 += amt;
-                e.1 += 1;
-                acc
-            },
-        )
+        .map(|(cat, amt)| HashMap::from([(cat.clone(), (*amt, 1u64))]))
+        .reduce(merge_category_totals)
+        .unwrap_or_default()
         .into_iter()
         .map(|(cat, (total, count))| CategoryTotal {
-            category: cat.to_string(),
+            category: cat,
             total,
             count,
         })
         .collect()
+}
+
+fn merge_category_totals(
+    mut left: HashMap<String, (f64, u64)>,
+    right: HashMap<String, (f64, u64)>,
+) -> HashMap<String, (f64, u64)> {
+    right.into_iter().for_each(|(category, (total, count))| {
+        let entry = left.entry(category).or_insert((0.0, 0));
+        entry.0 += total;
+        entry.1 += count;
+    });
+    left
 }
 
 #[cfg(test)]

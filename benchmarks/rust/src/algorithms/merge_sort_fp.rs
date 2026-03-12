@@ -1,6 +1,6 @@
-/// Merge sort with iterator-based merge step.
+/// Merge sort with a declarative merge step based on slice decomposition.
 /// The recursive structure is identical to the index-based version in merge_sort.rs.
-/// Only the merge helper differs: Peekable + iter::from_fn vs while-loop with indices.
+/// Only the merge helper differs: immutable slice views vs while-loop indices.
 pub fn merge_sort_fp(xs: &[i64]) -> Vec<i64> {
     if xs.len() <= 1 {
         return xs.to_vec();
@@ -11,17 +11,28 @@ pub fn merge_sort_fp(xs: &[i64]) -> Vec<i64> {
     merge_fp(&left, &right)
 }
 
-/// Iterator-based merge using Peekable + from_fn pattern matching.
-/// Contrast with merge_sort::merge which uses while-loop + index tracking.
+/// Merge two sorted slices by pattern-matching on their heads.
 fn merge_fp(left: &[i64], right: &[i64]) -> Vec<i64> {
     let mut result = Vec::with_capacity(left.len() + right.len());
-    let mut li = left.iter().peekable();
-    let mut ri = right.iter().peekable();
-    result.extend(std::iter::from_fn(|| match (li.peek(), ri.peek()) {
-        (Some(&&l), Some(&&r)) if l <= r => li.next().copied(),
-        (Some(_), Some(_)) => ri.next().copied(),
-        (Some(_), None) => li.next().copied(),
-        (None, Some(_)) => ri.next().copied(),
+    let mut left_rest = left;
+    let mut right_rest = right;
+    result.extend(std::iter::from_fn(|| match (left_rest.split_first(), right_rest.split_first()) {
+        (Some((&l, l_tail)), Some((&r, _))) if l <= r => {
+            left_rest = l_tail;
+            Some(l)
+        }
+        (Some(_), Some((&r, r_tail))) => {
+            right_rest = r_tail;
+            Some(r)
+        }
+        (Some((&l, l_tail)), None) => {
+            left_rest = l_tail;
+            Some(l)
+        }
+        (None, Some((&r, r_tail))) => {
+            right_rest = r_tail;
+            Some(r)
+        }
         (None, None) => None,
     }));
     result
