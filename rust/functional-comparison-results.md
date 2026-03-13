@@ -24,7 +24,7 @@ Rustの命令型スタイル（`for`/`while`、`mut`、インデックス追跡�
 
 ### 分析
 
-通常モードではFP側が全サイズで速かった。今回のFP版は以前の `Peekable` を廃止し、[merge_sort_fp.rs](/home/shouki/functional-programing/benchmarks/rust/src/algorithms/merge_sort_fp.rs#L14) で不変スライスの先頭を進める構成にしているため、以前のような `peek()` の固定オーバーヘッドは消えている。
+通常モードではFP側が全サイズで速かった。今回のFP版は以前の `Peekable` を廃止し、[merge_sort_fp.rs](src/algorithms/merge_sort_fp.rs#L14) で不変スライスの先頭を進める構成にしているため、以前のような `peek()` の固定オーバーヘッドは消えている。
 
 少なくとも現状コードについては、「関数型っぽい merge が遅い」という主張は成立しない。以前の遅さは `Peekable` ベースの設計に強く依存していたと読むのが妥当。
 
@@ -44,7 +44,7 @@ FP側は `filter + all` による宣言的な試行除算。
 
 ### 分析
 
-ここはもう「スタイル差」ではなく、**アルゴリズム差** が支配的。FP側は [sieve_fp.rs](/home/shouki/functional-programing/benchmarks/rust/src/algorithms/sieve_fp.rs#L1) で真に宣言的な書き方に寄せた代わりに、篩ではなく試行除算になっている。計算量が大きく悪化するので、遅くなるのは自然。
+ここはもう「スタイル差」ではなく、**アルゴリズム差** が支配的。FP側は [sieve_fp.rs](src/algorithms/sieve_fp.rs#L1) で真に宣言的な書き方に寄せた代わりに、篩ではなく試行除算になっている。計算量が大きく悪化するので、遅くなるのは自然。
 
 この結果は、「関数型っぽく書こうとすると遅い」の証拠ではない。正しくは、「この問題で不変・宣言的な書き方を優先すると、命令型の篩と同じアルゴリズムを維持しにくい」という結果。
 
@@ -63,7 +63,7 @@ FP側は `filter + all` による宣言的な試行除算。
 
 ### 分析
 
-通常モードではFP側が一貫して少し遅いが、差は 5-27% に収まっている。[word_count_fp.rs](/home/shouki/functional-programing/benchmarks/rust/src/data_processing/word_count_fp.rs#L22) のような遅延評価ベースの iterator chain は、この種の文字列処理では命令型とかなり近い性能帯に入る。
+通常モードではFP側が一貫して少し遅いが、差は 5-27% に収まっている。[word_count_fp.rs](src/data_processing/word_count_fp.rs#L22) のような遅延評価ベースの iterator chain は、この種の文字列処理では命令型とかなり近い性能帯に入る。
 
 つまり「だいたい同等だが、ホットパスなら命令型が少し有利」という程度の結論でよい。
 
@@ -83,7 +83,7 @@ FP側は singleton `HashMap` を作って `reduce` で部分結果を結合す�
 
 ### 分析
 
-これは予想通り大きく遅い。[group_by_fp.rs](/home/shouki/functional-programing/benchmarks/rust/src/data_processing/group_by_fp.rs#L8) は各レコードを singleton map に変換し、それを `reduce` で統合しているため、比較対象よりもアロケーションとマージコストがはるかに大きい。
+これは予想通り大きく遅い。[group_by_fp.rs](src/data_processing/group_by_fp.rs#L8) は各レコードを singleton map に変換し、それを `reduce` で統合しているため、比較対象よりもアロケーションとマージコストがはるかに大きい。
 
 以前より数字は改善したが、それでも約 6 倍遅い。今のほうが **処理モデルとしては本当に関数型寄り** で、その分のコストが安定して観測されている。
 

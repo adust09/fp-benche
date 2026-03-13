@@ -40,7 +40,6 @@ Comparing performance of idiomatic Rust and Haskell across algorithms, data proc
 ### Quick Start
 
 ```bash
-cd benchmarks
 ./setup.sh      # Check deps, generate data, build both projects
 ./run-all.sh    # Run all hyperfine comparisons
 ```
