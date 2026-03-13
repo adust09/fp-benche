@@ -1,0 +1,73 @@
+[package]
+name = "fp-benchmarks"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+csv = "1"
+rayon = "1"
+crossbeam-channel = "0.5"
+rustica = "0.11"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bin]]
+name = "fibonacci"
+path = "src/bin/fibonacci.rs"
+
+[[bin]]
+name = "merge_sort"
+path = "src/bin/merge_sort.rs"
+
+[[bin]]
+name = "sieve"
+path = "src/bin/sieve.rs"
+
+[[bin]]
+name = "word_count"
+path = "src/bin/word_count.rs"
+
+[[bin]]
+name = "json_filter"
+path = "src/bin/json_filter.rs"
+
+[[bin]]
+name = "group_by"
+path = "src/bin/group_by.rs"
+
+[[bin]]
+name = "parallel_map"
+path = "src/bin/parallel_map.rs"
+
+[[bin]]
+name = "channel_throughput"
+path = "src/bin/channel_throughput.rs"
+
+[[bench]]
+name = "algorithms"
+harness = false
+
+[[bench]]
+name = "data_processing"
+harness = false
+
+[[bench]]
+name = "concurrency"
+harness = false
+
+[[bench]]
+name = "functional_comparison"
+harness = false
+
+[[bench]]
+name = "rustica_comparison"
+harness = false
