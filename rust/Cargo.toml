@@ -16,6 +16,8 @@ csv = "1"
 rayon = "1"
 crossbeam-channel = "0.5"
 rustica = "0.11"
+sha2 = "0.10"
+rand = { version = "0.8", features = ["std_rng"] }
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
@@ -70,4 +72,8 @@ harness = false
 
 [[bench]]
 name = "rustica_comparison"
+harness = false
+
+[[bench]]
+name = "consensus"
 harness = false
